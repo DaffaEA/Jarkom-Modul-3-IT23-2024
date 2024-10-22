@@ -150,3 +150,65 @@ iface eth0 inet dhcp
 auto eth0
 iface eth0 inet dhcp
 ```
+
+# Soal 1
+
+```
+Pulau Paradis telah menjadi tempat yang damai selama 1000 tahun, namun kedamaian tersebut tidak bertahan selamanya. Perang antara kaum Marley dan Eldia telah mencapai puncak. Kaum Marley yang dipimpin oleh Zeke, me-register domain name marley.yyy.com untuk worker Laravel mengarah pada Annie. Namun ternyata tidak hanya kaum Marley saja yang berinisiasi, kaum Eldia ternyata sudah mendaftarkan domain name eldia.yyy.com untuk worker PHP (0) mengarah pada Armin.
+```
+
+```
+apt-get update -y
+apt-get install bind9 -y
+```
+script Fritz(DNS server)
+```bash
+echo '
+zone "marley.it23.com" {
+	type master;
+	file "/etc/bind/it23/marley.it23.com";
+};' > /etc/bind/named.conf.local
+
+echo '
+zone "eldia.it23.com" {
+	type master;
+	file "/etc/bind/it23/eldia.it23.com";
+};' >> /etc/bind/named.conf.local
+
+mkdir -p /etc/bind/it23
+
+echo ';
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     marley.it23.com. root.marley.it23.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      marley.it23.com.
+@       IN      A       10.75.1.2
+@       IN      AAAA    ::1' > /etc/bind/it23/marley.it23.com
+
+echo "marley.it23.com harusnya bisa(in theory)"
+
+echo ';
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     eldia.it23.com. root.eldia.it23.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      eldia.it23.com.
+@       IN      A       10.75.2.2
+@       IN      AAAA    ::1' > /etc/bind/it23/eldia.it23.com
+
+echo "eldia.it23.com harusnya bisa(in theory)"
+```
+
