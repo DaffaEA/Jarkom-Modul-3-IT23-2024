@@ -30,3 +30,12 @@ iface eth4 inet static
 up iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE -s 10.75.0.0/16
 
 ```
+
+### Fritz(DNS Server)
+```
+auto eth0
+iface eth0 inet static
+	address 10.75.4.3
+	netmask 255.255.255.0
+	gateway 10.75.4.1
+```
