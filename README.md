@@ -38,4 +38,6 @@ iface eth0 inet static
 	address 10.75.4.3
 	netmask 255.255.255.0
 	gateway 10.75.4.1
+
+up echo nameserver 192.168.122.1 >> /etc/resolv.conf
 ```
