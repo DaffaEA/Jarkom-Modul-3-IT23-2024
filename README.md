@@ -161,7 +161,7 @@ Pulau Paradis telah menjadi tempat yang damai selama 1000 tahun, namun kedamaian
 apt-get update -y
 apt-get install bind9 -y
 ```
-script Fritz(DNS server)
+### script Fritz(DNS server)
 ```bash
 echo '
 zone "marley.it23.com" {
