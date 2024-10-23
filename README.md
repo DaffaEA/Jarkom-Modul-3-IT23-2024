@@ -212,3 +212,80 @@ $TTL    604800
 echo "eldia.it23.com harusnya bisa(in theory)"
 ```
 
+## Soal 2
+```
+1. Semua Client harus menggunakan konfigurasi ip address dari keluarga Tybur (dhcp).
+2. Client yang melalui bangsa marley mendapatkan range IP dari [prefix IP].1.05 - [prefix IP].1.25 dan [prefix IP].1.50 - [prefix IP].1.100 (2)
+3. Client yang melalui bangsa eldia mendapatkan range IP dari [prefix IP].2.09 - [prefix IP].2.27 dan [prefix IP].2 .81 - [prefix IP].2.243 (3)
+4. Client mendapatkan DNS dari keluarga Fritz dan dapat terhubung dengan internet melalui DNS tersebut (4)
+5. Dikarenakan keluarga Tybur tidak menyukai kaum eldia, maka mereka hanya meminjamkan ip address ke kaum eldia selama 6 menit. Namun untuk kaum marley, keluarga Tybur meminjamkan ip address selama 30 menit. Waktu maksimal dialokasikan untuk peminjaman alamat IP selama 87 menit. (5)
+```
+### Script Fritz(DNS Server)
+```
+echo '
+options {
+        directory "/var/cache/bind";
+
+        forwarders {
+            192.168.122.1;
+        };
+
+        allow-query{any;};
+
+        auth-nxdomain no;    # conform to RFC1035
+        listen-on-v6 { any; };
+};' > /etc/bind/named.conf.options
+```
+### Script Tybur(DHCP Server)
+```
+apt-get update -y
+apt-get install isc-dhcp-server -y
+```
+```bash
+echo '
+INTERFACESv4="eth0"
+' > /etc/default/isc-dhcp-server
+
+echo 'subnet 10.75.1.0 netmask 255.255.255.0 {
+    range 10.75.1.5 10.75.1.25;
+    range 10.75.1.50 10.75.1.100;
+    option routers 10.75.1.1;
+    option broadcast-address 10.75.1.255;
+    option domain-name-servers 10.75.4.3;
+    default-lease-time 360;
+    max-lease-time 5220;
+}
+
+subnet 10.75.2.0 netmask 255.255.255.0 {
+    range 10.75.2.9 10.75.2.27;
+    range 10.75.2.81 10.75.2.243;
+    option routers 10.75.2.1;
+    option broadcast-address 10.75.2.255;
+    option domain-name-servers 10.75.4.3;
+    default-lease-time 1800;
+    max-lease-time 5220;
+}
+
+subnet 10.75.3.0 netmask 255.255.255.0 {
+}
+
+subnet 10.75.4.0 netmask 255.255.255.0 {
+}' > /etc/dhcp/dhcpd.conf
+```
+### Script Paradis (DHCP Relay) 
+```
+apt-get update
+apt-get install isc-dhcp-relay -y
+service isc-dhcp-relay start
+```
+```
+echo '
+SERVERS="10.75.4.2"
+INTERFACES="eth1 eth2 eth3 eth4"
+OPTIONS=""
+' > /etc/default/isc-dhcp-relay
+```
+Jangan Lupa Uncomment di bagian `/etc/syscntl.conf`
+```
+net.ipv4.ip_forward=1
+```
