@@ -267,9 +267,11 @@ subnet 10.75.2.0 netmask 255.255.255.0 {
 }
 
 subnet 10.75.3.0 netmask 255.255.255.0 {
+    option routers 10.75.3.1;
 }
 
 subnet 10.75.4.0 netmask 255.255.255.0 {
+    option routers 10.75.4.1;
 }' > /etc/dhcp/dhcpd.conf
 ```
 ### Script Paradis (DHCP Relay) 
@@ -278,14 +280,14 @@ apt-get update
 apt-get install isc-dhcp-relay -y
 service isc-dhcp-relay start
 ```
-```
+```bash
 echo '
 SERVERS="10.75.4.2"
 INTERFACES="eth1 eth2 eth3 eth4"
 OPTIONS=""
 ' > /etc/default/isc-dhcp-relay
 ```
-Jangan Lupa Uncomment di bagian `/etc/syscntl.conf`
+Jangan Lupa Uncomment di bagian `/etc/sysctl.conf`
 ```
 net.ipv4.ip_forward=1
 ```
