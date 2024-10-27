@@ -559,10 +559,13 @@ upstream least_conn {
 ```
 
 Testing 1 Worker : 
-![github-small](/home/bosmuda/Documents/jarkomprak/3/least-conn_worker/1-worker.png /home/bosmuda/Documents/jarkomprak/3/least-conn_worker/2-worker.png /home/bosmuda/Documents/jarkomprak/3/least-conn_worker/3-worker.png)
+![github-small](https://github.com/DaffaEA/Jarkom-Modul-3-IT23-2024/blob/main/images/1-worker.png)
 
 Testing 2 Worker : 
+![github-small](https://github.com/DaffaEA/Jarkom-Modul-3-IT23-2024/blob/main/images/2-worker.png)
 
+Testing 3 Worker :
+![github-small](https://github.com/DaffaEA/Jarkom-Modul-3-IT23-2024/blob/main/images/3-worker.png)
 
 ## Soal 10
 
@@ -652,6 +655,12 @@ rm /etc/nginx/sites-enabled/default
 
 service nginx restart
 ```
+
+![github](https://github.com/DaffaEA/Jarkom-Modul-3-IT23-2024/blob/main/images/pass.png)
+
+![github](https://github.com/DaffaEA/Jarkom-Modul-3-IT23-2024/blob/main/images/pass2.png)
+
+![github](https://github.com/DaffaEA/Jarkom-Modul-3-IT23-2024/blob/main/images/pass3.png)
 
 ## Soal 11
 
@@ -744,6 +753,10 @@ server {
 
 service nginx restart
 ```
+
+Lakukan Testing dengan : `lynx eldia.it23.com/titan`
+
+![github-small](https://github.com/DaffaEA/Jarkom-Modul-3-IT23-2024/blob/main/images/titan.png)
 
 ## Soal 12
 
@@ -841,16 +854,40 @@ server {
 service nginx restart
 ```
 
+
+
 ## Soal 13
 
 > Karena mengetahui bahwa ada keturunan marley yang mewarisi kekuatan titan, Zeke pun berinisiatif untuk menyimpan data data penting di Warhammer, dan semua data tersebut harus dapat diakses oleh anak buah kesayangannya, Annie, Reiner, dan Berthold.  (13)
 
-
-
+```
+apt-get update
+apt-get install mariadb-server -y
+service mysql start
 touch /var/run/mysqld/mysqld.sock
 
-mysql -u root -p
-Enter password: (kosong)
+echo '# This group is read both by the client and the server
+# use it for options that affect everything
+[client-server]
+
+# Import all .cnf files from configuration directory
+!includedir /etc/mysql/conf.d/
+!includedir /etc/mysql/mariadb.conf.d/
+
+# Options affecting the MySQL server (mysqld)
+[mysqld]
+skip-networking=0
+skip-bind-address
+' > /etc/mysql/my.cnf 
+
+sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mysql/mariadb.conf.d/50-server.cnf
+
+service mysql restart
+```
+
+`mysql -u root -p`
+
+`Enter password: (kosong)`
 
 Menambahkan user it23 pada database:
 
@@ -858,8 +895,14 @@ Menambahkan user it23 pada database:
 CREATE USER 'it23'@'%' IDENTIFIED BY 'it23';
 CREATE USER 'it23'@'localhost' IDENTIFIED BY 'it23';
 CREATE DATABASE db_it23;
-GRANT ALL PRIVILEGES ON . TO 'it23'@'%';
-GRANT ALL PRIVILEGES ON . TO 'it23'@'localhost';
+GRANT ALL PRIVILEGES ON db_it23.* TO 'it23'@'%';
+GRANT ALL PRIVILEGES ON db_it23.* TO 'it23'@'localhost';
 FLUSH PRIVILEGES;
+```
 
-mysql --host=10.75.3.4 --port=3306 --user=it24 --password=it24 db_it24 -e "SHOW DATABASES;"
+Testin dari Client (Zeke/Erwin) : 
+`mysql --host=10.75.3.4 --port=3306 --user=it23 --password=it23 db_it23 -e "SHOW DATABASES;"`
+
+![github-small](https://github.com/DaffaEA/Jarkom-Modul-3-IT23-2024/blob/main/images/db-1.png)
+
+![github-small](https://github.com/DaffaEA/Jarkom-Modul-3-IT23-2024/blob/main/images/db-2.png)
