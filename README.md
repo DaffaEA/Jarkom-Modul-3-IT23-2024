@@ -345,3 +345,454 @@ echo 'server {
 
 service nginx restart
 ```
+
+## Soal 4
+
+```
+Dikarenakan Armin sudah mendapatkan kekuatan titan colossal, maka bantulah kaum eldia menggunakan colossal agar dapat bekerja sama dengan baik. Kemudian lakukan testing dengan 6000 request dan 200 request/second. (7)
+```
+
+### script DNS Server 
+```
+echo ';
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     eldia.it23.com. root.eldia.it23.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      eldia.it23.com.
+@       IN      A       10.75.3.3
+@       IN      AAAA    ::1' > /etc/bind/it23/eldia.it23.com
+
+echo "eldia.it23.com harusnya bisa(in theory)"
+```
+### script LB
+```
+apt-get update
+apt-get install nginx
+```
+```bash
+ echo 'upstream worker {
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+server {
+    listen 80;
+    server_name eldia.it23.com;
+
+    root /var/www/eldia.it23.com;
+
+    index index.html index.htm index.nginx-debian.html;
+
+    location / {
+        proxy_pass http://worker;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}' > /etc/nginx/sites-available/lb_nginx
+
+ln -s /etc/nginx/sites-available/lb_nginx /etc/nginx/sites-enabled
+rm /etc/nginx/sites-enabled/default
+
+service nginx restart
+
+## Menguji server Nginx dengan beban 6000 permintaan pada 200 request/detik ##
+# ab -n 6000 -c 200 http://eldia.it23.com/
+```
+
+## Soal 5
+```
+Karena Erwin meminta “laporan kerja Armin”, maka dari itu buatlah analisis hasil testing dengan 1000 request dan 75 request/second untuk masing-masing algoritma Load Balancer dengan ketentuan sebagai berikut:
+Nama Algoritma Load Balancer
+1. Report hasil testing pada Apache Benchmark
+2. Grafik request per second untuk masing masing algoritma. 
+3. Analisis (8)
+```
+### script LB
+```bash
+echo 'upstream round_robin {
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+upstream least_conn {
+    least_conn;
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+upstream ip_hash {
+    ip_hash;
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+upstream generic_hash {
+    hash $request_uri;
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+server {
+    listen 80;
+    server_name eldia.it23.com;
+
+    root /var/www/eldia.it23.com;
+    index index.html index.htm index.nginx-debian.html;
+
+    location / {
+        proxy_pass http://round_robin;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /round_robin/ {
+        proxy_pass http://round_robin;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /least_conn/ {
+        proxy_pass http://least_conn;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /ip_hash/ {
+        proxy_pass http://ip_hash;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /generic_hash/ {
+        proxy_pass http://generic_hash;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}' > /etc/nginx/sites-available/lb_nginx
+
+service nginx restart
+
+## testing dengan 6000 request dan 200 request/second ##
+# ab -n 6000 -c 200 http://eldia.it23.com/
+
+## testing dengan 1000 request dan 75 request/second ##
+# ab -n 1000 -c 75 http://eldia.it23.com/round_robin/
+# ab -n 1000 -c 75 http://eldia.it23.com/least_conn/
+# ab -n 1000 -c 75 http://eldia.it23.com/ip_hash/
+# ab -n 1000 -c 75 http://eldia.it23.com/generic_hash/
+
+## testing dengan 1000 request dan 10 request/second ##
+# ab -n 1000 -c 10 http://eldia.it23.com/least_conn/
+```
+
+## Soal 6
+```
+Dengan menggunakan algoritma Least-Connection, lakukan testing dengan menggunakan 3 worker, 2 worker, dan 1 worker sebanyak 1000 request dengan 10 request/second, kemudian tambahkan grafiknya pada “laporan kerja Armin”. (9)
+```
+
+## Soal 7
+```
+Selanjutnya coba tambahkan keamanan dengan konfigurasi autentikasi di Colossal dengan dengan kombinasi username: “arminannie” dan password: “jrkmyyy”, dengan yyy merupakan kode kelompok. Terakhir simpan file “htpasswd” nya di /etc/nginx/supersecret/ (10)
+```
+### script LB
+```bash
+cp /etc/nginx/sites-available/default /etc/nginx/sites-available/lb_nginx
+mkdir /etc/nginx/supersecret
+htpasswd -bc /etc/nginx/supersecret/htpasswd arminannie jrkmit23
+
+echo 'upstream round_robin {
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+upstream least_conn {
+    least_conn;
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+upstream ip_hash {
+    ip_hash;
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+upstream generic_hash {
+    hash $request_uri;
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+server {
+    listen 80;
+    server_name eldia.it23.com;
+
+    root /var/www/eldia.it23.com;
+    index index.html index.htm index.nginx-debian.html;
+
+    location / {
+        proxy_pass http://round_robin;
+        auth_basic "Restricted Content";
+	auth_basic_user_file /etc/nginx/supersecret/htpasswd;
+    }
+
+    location /round_robin/ {
+        proxy_pass http://round_robin;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /least_conn/ {
+        proxy_pass http://least_conn;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /ip_hash/ {
+        proxy_pass http://ip_hash;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /generic_hash/ {
+        proxy_pass http://generic_hash;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}' > /etc/nginx/sites-available/lb_nginx
+
+ln -s /etc/nginx/sites-available/lb_nginx /etc/nginx/sites-enabled/
+rm /etc/nginx/sites-enabled/default
+
+service nginx restart
+```
+
+## Soal 8
+```
+Lalu buat untuk setiap request yang mengandung /titan akan di proxy passing menuju halaman https://attackontitan.fandom.com/wiki/Attack_on_Titan_Wiki (11) 
+hint: (proxy_pass)
+```
+### script LB
+```bash
+echo 'upstream round_robin {
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+upstream least_conn {
+    least_conn;
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+upstream ip_hash {
+    ip_hash;
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+upstream generic_hash {
+    hash $request_uri;
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+server {
+    listen 80;
+    server_name eldia.it23.com;
+
+    root /var/www/eldia.it23.com;
+    index index.html index.htm index.nginx-debian.html;
+
+    location / {
+            proxy_pass http://round_robin;
+            auth_basic "Restricted Content";
+	        auth_basic_user_file /etc/nginx/supersecret/htpasswd;
+        }
+
+        location /titan {
+            proxy_pass https://attackontitan.fandom.com/wiki/Attack_on_Titan_Wiki;
+            proxy_set_header Host attackontitan.fandom.com;
+
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+    location /round_robin/ {
+        proxy_pass http://round_robin;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /least_conn/ {
+        proxy_pass http://least_conn;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /ip_hash/ {
+        proxy_pass http://ip_hash;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /generic_hash/ {
+        proxy_pass http://generic_hash;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}' > /etc/nginx/sites-available/lb_nginx
+
+service nginx restart
+```
+
+## Soal 9
+```
+Selanjutnya Colossal ini hanya boleh diakses oleh client dengan IP [Prefix IP].1.77, [Prefix IP].1.88, [Prefix IP].2.144, dan [Prefix IP].2.156. (12) 
+hint: (fixed in dulu clientnya)
+```
+
+```bash
+echo 'upstream round_robin {
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+upstream least_conn {
+    least_conn;
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+upstream ip_hash {
+    ip_hash;
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+upstream generic_hash {
+    hash $request_uri;
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+server {
+    listen 80;
+    server_name eldia.it23.com;
+
+    root /var/www/eldia.it23.com;
+    index index.html index.htm index.nginx-debian.html;
+
+    location / {
+            proxy_pass http://round_robin;
+            auth_basic "Restricted Content";
+	        auth_basic_user_file /etc/nginx/supersecret/htpasswd;
+                allow 10.75.1.77;
+                allow 10.75.1.88;
+                allow 10.75.2.144;
+                allow 10.75.2.156;
+            deny all;
+        }
+
+        location /titan {
+            proxy_pass https://attackontitan.fandom.com/wiki/Attack_on_Titan_Wiki;
+            proxy_set_header Host attackontitan.fandom.com;
+
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+    location /round_robin/ {
+        proxy_pass http://round_robin;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /least_conn/ {
+        proxy_pass http://least_conn;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /ip_hash/ {
+        proxy_pass http://ip_hash;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /generic_hash/ {
+        proxy_pass http://generic_hash;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}' > /etc/nginx/sites-available/lb_nginx
+
+service nginx restart
+```
+
+## Soal 10
+```
+Karena mengetahui bahwa ada keturunan marley yang mewarisi kekuatan titan, Zeke pun berinisiatif untuk menyimpan data data penting di Warhammer, dan semua data tersebut harus dapat diakses oleh anak buah kesayangannya, Annie, Reiner, dan Berthold.  (13)
+```
