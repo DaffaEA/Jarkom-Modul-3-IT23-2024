@@ -156,11 +156,10 @@ auto eth0
 iface eth0 inet dhcp
 ```
 
-# Soal 1
+# Soal 0 - 5
 
-```
 Pulau Paradis telah menjadi tempat yang damai selama 1000 tahun, namun kedamaian tersebut tidak bertahan selamanya. Perang antara kaum Marley dan Eldia telah mencapai puncak. Kaum Marley yang dipimpin oleh Zeke, me-register domain name marley.yyy.com untuk worker Laravel mengarah pada Annie. Namun ternyata tidak hanya kaum Marley saja yang berinisiasi, kaum Eldia ternyata sudah mendaftarkan domain name eldia.yyy.com untuk worker PHP (0) mengarah pada Armin.
-```
+
 
 ```
 apt-get update -y
@@ -217,7 +216,6 @@ $TTL    604800
 echo "eldia.it23.com harusnya bisa(in theory)"
 ```
 
-## Soal 2
 ```
 1. Semua Client harus menggunakan konfigurasi ip address dari keluarga Tybur (dhcp).
 2. Client yang melalui bangsa marley mendapatkan range IP dari [prefix IP].1.05 - [prefix IP].1.25 dan [prefix IP].1.50 - [prefix IP].1.100 (2)
@@ -297,7 +295,7 @@ Jangan Lupa Uncomment di bagian `/etc/sysctl.conf`
 net.ipv4.ip_forward=1
 ```
 
-## Soal 3
+## Soal 6
 ```
 Armin berinisiasi untuk memerintahkan setiap worker PHP untuk melakukan konfigurasi virtual host untuk website berikut https://intip.in/BangsaEldia dengan menggunakan php 7.3 (6)
 ```
@@ -346,7 +344,7 @@ echo 'server {
 service nginx restart
 ```
 
-## Soal 4
+## Soal 7
 
 ```
 Dikarenakan Armin sudah mendapatkan kekuatan titan colossal, maka bantulah kaum eldia menggunakan colossal agar dapat bekerja sama dengan baik. Kemudian lakukan testing dengan 6000 request dan 200 request/second. (7)
@@ -409,7 +407,7 @@ service nginx restart
 # ab -n 6000 -c 200 http://eldia.it23.com/
 ```
 
-## Soal 5
+## Soal 8
 ```
 Karena Erwin meminta “laporan kerja Armin”, maka dari itu buatlah analisis hasil testing dengan 1000 request dan 75 request/second untuk masing-masing algoritma Load Balancer dengan ketentuan sebagai berikut:
 Nama Algoritma Load Balancer
@@ -509,12 +507,12 @@ service nginx restart
 # ab -n 1000 -c 10 http://eldia.it23.com/least_conn/
 ```
 
-## Soal 6
+## Soal 9
 ```
 Dengan menggunakan algoritma Least-Connection, lakukan testing dengan menggunakan 3 worker, 2 worker, dan 1 worker sebanyak 1000 request dengan 10 request/second, kemudian tambahkan grafiknya pada “laporan kerja Armin”. (9)
 ```
 
-## Soal 7
+## Soal 10
 ```
 Selanjutnya coba tambahkan keamanan dengan konfigurasi autentikasi di Colossal dengan dengan kombinasi username: “arminannie” dan password: “jrkmyyy”, dengan yyy merupakan kode kelompok. Terakhir simpan file “htpasswd” nya di /etc/nginx/supersecret/ (10)
 ```
@@ -603,7 +601,7 @@ rm /etc/nginx/sites-enabled/default
 service nginx restart
 ```
 
-## Soal 8
+## Soal 11
 ```
 Lalu buat untuk setiap request yang mengandung /titan akan di proxy passing menuju halaman https://attackontitan.fandom.com/wiki/Attack_on_Titan_Wiki (11) 
 hint: (proxy_pass)
@@ -695,7 +693,7 @@ server {
 service nginx restart
 ```
 
-## Soal 9
+## Soal 2
 ```
 Selanjutnya Colossal ini hanya boleh diakses oleh client dengan IP [Prefix IP].1.77, [Prefix IP].1.88, [Prefix IP].2.144, dan [Prefix IP].2.156. (12) 
 hint: (fixed in dulu clientnya)
@@ -792,7 +790,7 @@ server {
 service nginx restart
 ```
 
-## Soal 10
+## Soal 13
 ```
 Karena mengetahui bahwa ada keturunan marley yang mewarisi kekuatan titan, Zeke pun berinisiatif untuk menyimpan data data penting di Warhammer, dan semua data tersebut harus dapat diakses oleh anak buah kesayangannya, Annie, Reiner, dan Berthold.  (13)
 ```
