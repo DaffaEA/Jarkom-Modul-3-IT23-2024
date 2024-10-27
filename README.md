@@ -505,9 +505,6 @@ service nginx restart
 # ab -n 1000 -c 75 http://eldia.it23.com/least_conn/
 # ab -n 1000 -c 75 http://eldia.it23.com/ip_hash/
 # ab -n 1000 -c 75 http://eldia.it23.com/generic_hash/
-
-## testing dengan 1000 request dan 10 request/second ##
-# ab -n 1000 -c 10 http://eldia.it23.com/least_conn/
 ```
 
 Testing dengan `1000 request dan 75 request/second` untuk masing-masing algoritma Load Balancer
@@ -528,9 +525,44 @@ Generic Hash : `ab -n 1000 -c 75 http://eldia.it23.com/generic_hash/`
 
 ![github-small](https://github.com/DaffaEA/Jarkom-Modul-3-IT23-2024/blob/main/images/generic.png)
 
+-> Grafik request per second untuk masing masing algoritma.  
+
+![github-small](https://github.com/DaffaEA/Jarkom-Modul-3-IT23-2024/blob/main/images/performance_analysis.jpg)
+
+### Analisis : 
+
+- Kinerja Tertinggi (RPS): Dari hasil pengujian, algoritma Generic Hash menghasilkan jumlah Requests per second (RPS) tertinggi sebesar 202.54, diikuti oleh IP Hash dengan 196.13 RPS. Ini menunjukkan bahwa Generic Hash mampu mengelola beban secara lebih efisien dalam pengujian ini, membuatnya optimal untuk situasi dengan beban permintaan yang tinggi.
+
+- Kinerja Terendah (RPS): Least Connections memiliki performa terendah dengan RPS 178.24. Ini mungkin disebabkan oleh overhead dalam penentuan worker dengan koneksi paling sedikit untuk setiap permintaan, yang bisa memengaruhi efisiensi saat beban meningkat.
+
+- Kecepatan Respon (Time per Request): Generic Hash juga memiliki waktu respon tercepat (4.937 ms per request), menunjukkan bahwa algoritma ini tidak hanya efektif dalam menangani lebih banyak permintaan, tetapi juga mampu merespons dengan cepat. Least Connections memiliki waktu per request terlama, yaitu 5.610 ms, yang konsisten dengan kinerjanya dalam hal RPS.
+
+- Transfer Rate: Algoritma Generic Hash menunjukkan transfer rate tertinggi (24.33 KB/sec), yang berhubungan langsung dengan kemampuannya untuk mengelola lebih banyak permintaan per detik. Sebaliknya, Least Connections memiliki transfer rate terendah (21.41 KB/sec), mencerminkan kemampuan pemrosesan datanya yang lebih lambat dibandingkan algoritma lainnya.
+
+- Kesimpulan: Berdasarkan pengujian ini, Generic Hash adalah algoritma yang paling efisien dan responsif untuk lingkungan dengan permintaan tinggi, sedangkan Least Connections mungkin lebih cocok untuk situasi dengan beban yang lebih rendah atau permintaan yang lebih stabil. IP Hash dan Round Robin juga memberikan kinerja yang baik, dengan IP Hash sedikit lebih unggul dalam RPS dibandingkan Round Robin.
+
 ## Soal 9
 
 > Dengan menggunakan algoritma Least-Connection, lakukan testing dengan menggunakan 3 worker, 2 worker, dan 1 worker sebanyak 1000 request dengan 10 request/second, kemudian tambahkan grafiknya pada “laporan kerja Armin”. (9)
+
+```
+Jadikan komentar (#) baris server sesuai jumlah worker yang diminta
+upstream least_conn {
+    least_conn;
+    server 10.75.2.2;
+    server 10.75.2.3;
+    server 10.75.2.4;
+}
+
+## testing dengan 1000 request dan 10 request/second ##
+# ab -n 1000 -c 10 http://eldia.it23.com/least_conn/
+```
+
+Testing 1 Worker : 
+![github-small](/home/bosmuda/Documents/jarkomprak/3/least-conn_worker/1-worker.png /home/bosmuda/Documents/jarkomprak/3/least-conn_worker/2-worker.png /home/bosmuda/Documents/jarkomprak/3/least-conn_worker/3-worker.png)
+
+Testing 2 Worker : 
+
 
 ## Soal 10
 
