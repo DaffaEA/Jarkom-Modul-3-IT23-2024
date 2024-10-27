@@ -291,3 +291,52 @@ Jangan Lupa Uncomment di bagian `/etc/sysctl.conf`
 ```
 net.ipv4.ip_forward=1
 ```
+
+## Soal 3
+```
+Armin berinisiasi untuk memerintahkan setiap worker PHP untuk melakukan konfigurasi virtual host untuk website berikut https://intip.in/BangsaEldia dengan menggunakan php 7.3 (6)
+```
+
+### script php worker
+install.sh
+```bash
+apt-get update
+apt-get install nginx -y
+apt-get install wget unzip -y
+apt-get install php7.3-fpm php7.3-common php7.3-mysql php7.3-gmp php7.3-curl php7.3-intl php7.3-mbstring php7.3-xmlrpc php7.3-gd php7.3-xml php7.3-cli php7.3-zip -y
+```
+3.sh
+```bash
+service nginx start
+service php7.3-fpm start
+
+mkdir -p /var/www/eldia.it23.com
+
+wget --no-check-certificate 'https://drive.google.com/uc?export=download&id=1TvebIeMQjRjFURKVtA32lO9aL7U2msd6' -O /root/eldia.zip
+unzip -o /root/eldia.zip -d /var/www/eldia.it23.com
+
+cp /etc/nginx/sites-available/default /etc/nginx/sites-available/eldia.it23.com
+ln -s /etc/nginx/sites-available/eldia.it23.com /etc/nginx/sites-enabled/
+rm /etc/nginx/sites-enabled/default
+
+echo 'server {
+    listen 80;
+    server_name eldia.it23.com;
+
+    root /var/www/eldia.it23.com;
+    index index.php index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php7.3-fpm.sock; 
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}' > /etc/nginx/sites-available/eldia.it23.com
+
+service nginx restart
+```
