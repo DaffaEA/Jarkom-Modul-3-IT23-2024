@@ -158,7 +158,7 @@ iface eth0 inet dhcp
 
 # Soal 0 - 5
 
-Pulau Paradis telah menjadi tempat yang damai selama 1000 tahun, namun kedamaian tersebut tidak bertahan selamanya. Perang antara kaum Marley dan Eldia telah mencapai puncak. Kaum Marley yang dipimpin oleh Zeke, me-register domain name marley.yyy.com untuk worker Laravel mengarah pada Annie. Namun ternyata tidak hanya kaum Marley saja yang berinisiasi, kaum Eldia ternyata sudah mendaftarkan domain name eldia.yyy.com untuk worker PHP (0) mengarah pada Armin.
+>Pulau Paradis telah menjadi tempat yang damai selama 1000 tahun, namun kedamaian tersebut tidak bertahan selamanya. Perang antara kaum Marley dan Eldia telah mencapai puncak. Kaum Marley yang dipimpin oleh Zeke, me-register domain name marley.yyy.com untuk worker Laravel mengarah pada Annie. Namun ternyata tidak hanya kaum Marley saja yang berinisiasi, kaum Eldia ternyata sudah mendaftarkan domain name eldia.yyy.com untuk worker PHP (0) mengarah pada Armin.
 
 
 ```
@@ -216,13 +216,13 @@ $TTL    604800
 echo "eldia.it23.com harusnya bisa(in theory)"
 ```
 
-```
-1. Semua Client harus menggunakan konfigurasi ip address dari keluarga Tybur (dhcp).
-2. Client yang melalui bangsa marley mendapatkan range IP dari [prefix IP].1.05 - [prefix IP].1.25 dan [prefix IP].1.50 - [prefix IP].1.100 (2)
-3. Client yang melalui bangsa eldia mendapatkan range IP dari [prefix IP].2.09 - [prefix IP].2.27 dan [prefix IP].2 .81 - [prefix IP].2.243 (3)
-4. Client mendapatkan DNS dari keluarga Fritz dan dapat terhubung dengan internet melalui DNS tersebut (4)
-5. Dikarenakan keluarga Tybur tidak menyukai kaum eldia, maka mereka hanya meminjamkan ip address ke kaum eldia selama 6 menit. Namun untuk kaum marley, keluarga Tybur meminjamkan ip address selama 30 menit. Waktu maksimal dialokasikan untuk peminjaman alamat IP selama 87 menit. (5)
-```
+
+> 1. Semua Client harus menggunakan konfigurasi ip address dari keluarga Tybur (dhcp).
+> 2. Client yang melalui bangsa marley mendapatkan range IP dari [prefix IP].1.05 - [prefix IP].1.25 dan [prefix IP].1.50 - [prefix IP].1.100 (2)
+> 3. Client yang melalui bangsa eldia mendapatkan range IP dari [prefix IP].2.09 - [prefix IP].2.27 dan [prefix IP].2 .81 - [prefix IP].2.243 (3)
+> 4. Client mendapatkan DNS dari keluarga Fritz dan dapat terhubung dengan internet melalui DNS tersebut (4)
+> 5. Dikarenakan keluarga Tybur tidak menyukai kaum eldia, maka mereka hanya meminjamkan ip address ke kaum eldia selama 6 menit. Namun untuk kaum marley, keluarga Tybur meminjamkan ip address selama 30 menit. Waktu maksimal dialokasikan untuk peminjaman alamat IP selama 87 menit. (5)
+
 ### Script Fritz(DNS Server)
 ```
 echo '
@@ -296,9 +296,8 @@ net.ipv4.ip_forward=1
 ```
 
 ## Soal 6
-```
-Armin berinisiasi untuk memerintahkan setiap worker PHP untuk melakukan konfigurasi virtual host untuk website berikut https://intip.in/BangsaEldia dengan menggunakan php 7.3 (6)
-```
+
+> Armin berinisiasi untuk memerintahkan setiap worker PHP untuk melakukan konfigurasi virtual host untuk website berikut [https://intip.in/BangsaEldia](https://intip.in/BangsaEldia) dengan menggunakan php 7.3 (6)
 
 ### script php worker
 install.sh
@@ -346,9 +345,7 @@ service nginx restart
 
 ## Soal 7
 
-```
-Dikarenakan Armin sudah mendapatkan kekuatan titan colossal, maka bantulah kaum eldia menggunakan colossal agar dapat bekerja sama dengan baik. Kemudian lakukan testing dengan 6000 request dan 200 request/second. (7)
-```
+> Dikarenakan Armin sudah mendapatkan kekuatan titan colossal, maka bantulah kaum eldia menggunakan colossal agar dapat bekerja sama dengan baik. Kemudian lakukan testing dengan 6000 request dan 200 request/second. (7)
 
 ### script DNS Server 
 ```
@@ -369,6 +366,7 @@ $TTL    604800
 
 echo "eldia.it23.com harusnya bisa(in theory)"
 ```
+
 ### script LB
 ```
 apt-get update
@@ -407,14 +405,19 @@ service nginx restart
 # ab -n 6000 -c 200 http://eldia.it23.com/
 ```
 
+test menggunakan : `ab -n 6000 -c 200 http://eldia.it23.com/`
+
+![github-small](https://github.com/DaffaEA/Jarkom-Modul-3-IT23-2024/blob/main/images/7.png)
+
 ## Soal 8
-```
-Karena Erwin meminta “laporan kerja Armin”, maka dari itu buatlah analisis hasil testing dengan 1000 request dan 75 request/second untuk masing-masing algoritma Load Balancer dengan ketentuan sebagai berikut:
-Nama Algoritma Load Balancer
-1. Report hasil testing pada Apache Benchmark
-2. Grafik request per second untuk masing masing algoritma. 
-3. Analisis (8)
-```
+
+> Karena Erwin meminta “laporan kerja Armin”, maka dari itu buatlah analisis hasil testing dengan 1000 request dan 75 request/second untuk masing-masing algoritma Load Balancer dengan ketentuan sebagai berikut:
+
+> 1. Nama Algoritma Load Balancer
+> 2. Report hasil testing pada Apache Benchmark
+> 3. Grafik request per second untuk masing masing algoritma. 
+> 4. Analisis (8)
+
 ### script LB
 ```bash
 echo 'upstream round_robin {
@@ -507,15 +510,32 @@ service nginx restart
 # ab -n 1000 -c 10 http://eldia.it23.com/least_conn/
 ```
 
+Testing dengan `1000 request dan 75 request/second` untuk masing-masing algoritma Load Balancer
+
+Round Robbin : `ab -n 1000 -c 75 http://eldia.it23.com/round_robin/`
+
+![github-small](https://github.com/DaffaEA/Jarkom-Modul-3-IT23-2024/blob/main/images/rr.png)
+
+Least-Conn : `ab -n 1000 -c 75 http://eldia.it23.com/least_conn/`
+
+![github-small](https://github.com/DaffaEA/Jarkom-Modul-3-IT23-2024/blob/main/images/lc.png)
+
+Ip Hash : ` ab -n 1000 -c 75 http://eldia.it23.com/ip_hash/`
+
+![github-small](https://github.com/DaffaEA/Jarkom-Modul-3-IT23-2024/blob/main/images/ip-hash.png)
+
+Generic Hash : `ab -n 1000 -c 75 http://eldia.it23.com/generic_hash/`
+
+![github-small](https://github.com/DaffaEA/Jarkom-Modul-3-IT23-2024/blob/main/images/generic.png)
+
 ## Soal 9
-```
-Dengan menggunakan algoritma Least-Connection, lakukan testing dengan menggunakan 3 worker, 2 worker, dan 1 worker sebanyak 1000 request dengan 10 request/second, kemudian tambahkan grafiknya pada “laporan kerja Armin”. (9)
-```
+
+> Dengan menggunakan algoritma Least-Connection, lakukan testing dengan menggunakan 3 worker, 2 worker, dan 1 worker sebanyak 1000 request dengan 10 request/second, kemudian tambahkan grafiknya pada “laporan kerja Armin”. (9)
 
 ## Soal 10
-```
-Selanjutnya coba tambahkan keamanan dengan konfigurasi autentikasi di Colossal dengan dengan kombinasi username: “arminannie” dan password: “jrkmyyy”, dengan yyy merupakan kode kelompok. Terakhir simpan file “htpasswd” nya di /etc/nginx/supersecret/ (10)
-```
+
+> Selanjutnya coba tambahkan keamanan dengan konfigurasi autentikasi di Colossal dengan dengan kombinasi username: “arminannie” dan password: “jrkmyyy”, dengan yyy merupakan kode kelompok. Terakhir simpan file “htpasswd” nya di /etc/nginx/supersecret/ (10)
+
 ### script LB
 ```bash
 cp /etc/nginx/sites-available/default /etc/nginx/sites-available/lb_nginx
@@ -602,10 +622,10 @@ service nginx restart
 ```
 
 ## Soal 11
-```
-Lalu buat untuk setiap request yang mengandung /titan akan di proxy passing menuju halaman https://attackontitan.fandom.com/wiki/Attack_on_Titan_Wiki (11) 
+
+> Lalu buat untuk setiap request yang mengandung /titan akan di proxy passing menuju halaman https://attackontitan.fandom.com/wiki/Attack_on_Titan_Wiki (11) 
 hint: (proxy_pass)
-```
+
 ### script LB
 ```bash
 echo 'upstream round_robin {
@@ -693,11 +713,10 @@ server {
 service nginx restart
 ```
 
-## Soal 2
-```
-Selanjutnya Colossal ini hanya boleh diakses oleh client dengan IP [Prefix IP].1.77, [Prefix IP].1.88, [Prefix IP].2.144, dan [Prefix IP].2.156. (12) 
+## Soal 12
+
+> Selanjutnya Colossal ini hanya boleh diakses oleh client dengan IP [Prefix IP].1.77, [Prefix IP].1.88, [Prefix IP].2.144, dan [Prefix IP].2.156. (12) 
 hint: (fixed in dulu clientnya)
-```
 
 ```bash
 echo 'upstream round_robin {
@@ -791,6 +810,5 @@ service nginx restart
 ```
 
 ## Soal 13
-```
-Karena mengetahui bahwa ada keturunan marley yang mewarisi kekuatan titan, Zeke pun berinisiatif untuk menyimpan data data penting di Warhammer, dan semua data tersebut harus dapat diakses oleh anak buah kesayangannya, Annie, Reiner, dan Berthold.  (13)
-```
+
+> Karena mengetahui bahwa ada keturunan marley yang mewarisi kekuatan titan, Zeke pun berinisiatif untuk menyimpan data data penting di Warhammer, dan semua data tersebut harus dapat diakses oleh anak buah kesayangannya, Annie, Reiner, dan Berthold.  (13)
