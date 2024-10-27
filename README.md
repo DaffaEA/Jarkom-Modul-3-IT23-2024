@@ -844,3 +844,22 @@ service nginx restart
 ## Soal 13
 
 > Karena mengetahui bahwa ada keturunan marley yang mewarisi kekuatan titan, Zeke pun berinisiatif untuk menyimpan data data penting di Warhammer, dan semua data tersebut harus dapat diakses oleh anak buah kesayangannya, Annie, Reiner, dan Berthold.  (13)
+
+
+
+touch /var/run/mysqld/mysqld.sock
+
+mysql -u root -p
+Enter password: (kosong)
+
+Menambahkan user it23 pada database:
+
+```mysql
+CREATE USER 'it23'@'%' IDENTIFIED BY 'it23';
+CREATE USER 'it23'@'localhost' IDENTIFIED BY 'it23';
+CREATE DATABASE db_it23;
+GRANT ALL PRIVILEGES ON . TO 'it23'@'%';
+GRANT ALL PRIVILEGES ON . TO 'it23'@'localhost';
+FLUSH PRIVILEGES;
+
+mysql --host=10.75.3.4 --port=3306 --user=it24 --password=it24 db_it24 -e "SHOW DATABASES;"
